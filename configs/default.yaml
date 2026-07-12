@@ -1,0 +1,22 @@
+model:
+  name: "distilbert-base-uncased"
+  num_labels: 9
+  dropout: 0.3  
+
+training:
+  epochs: 6    
+  batch_size: 16
+  learning_rate: 2.0e-5
+  weight_decay: 0.01
+  max_length: 128
+  seed: 42
+  warmup_ratio: 0.1 
+  patience: 4 
+
+data:
+  train_path: "data/train.txt"
+  val_path: "data/val.txt"
+  test_path: "data/test.txt"
+
+output:
+  model_dir: "models"
