@@ -10,29 +10,18 @@
 
 ## Table of Contents
 
-- [Overview](#-overview)
-
-- [Architecture & Key Features](#-architecture--key-features)
-
-- [Results](#-results)
-
-- [Project Structure](#-project-structure)
-
-- [Installation](#-installation)
-
-- [Quick Start](#-quick-start)
-
-- [Dataset](#-dataset)
-
-- [Pre-trained Model](#-pre-trained-model)
-
-- [Roadmap](#-roadmap)
-
-- [Citation](#-citation)
-
-- [License](#-license)
-
-- [About the Author](#-about-the-author)
+- [Overview](#overview)
+- [Architecture & Key Features](#architecture--key-features)
+- [Results](#results)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Dataset](#dataset)
+- [Pre-trained Model](#pre-trained-model)
+- [Roadmap](#roadmap)
+- [Citation](#citation)
+- [License](#license)
+- [About the Author](#about-the-author)
 
 ---
 
