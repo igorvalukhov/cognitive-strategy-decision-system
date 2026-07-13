@@ -277,18 +277,6 @@ Data was generated using **Llama-3-70B** with marker-to-BIOES conversion. The da
 1. Download `best_model.pt`
 2. Place in `models/` folder
 3. Run: `python -m src.predict`
-  
-### Download
-
-[**Download `best_model.pt` from Google Drive**](https://drive.google.com/file/d/1W-EmF9BVZzERze2R6LRPVzV7vMUYAe_Q/view?usp=drive_link)
-
-### Usage
-
-1. Download `best_model.pt`
-
-2. Place in `models/` folder
-
-3. Run: `python -m src.predict`
 
 ---
 
@@ -313,7 +301,7 @@ If you use this code or dataset in your research, please cite:
 ```bibtex
 @misc{valukhov2026cognitive,
 
-author = {Valukhov, Igor and Tselykh, Alexander},
+author = {Valukhov Igor and Tselykh Alexander},
 
 title = {Cognitive Strategy Decision System for Causal Relation Extraction},
 
