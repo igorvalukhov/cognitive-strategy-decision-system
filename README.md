@@ -84,29 +84,36 @@ The module is built on the **DistilBERT** transformer architecture using the **B
 
 ## Project Structure
 
-```
-cognitive-strategy-decision-system/
+```cognitive-strategy-decision-system/
 ├── src/
 │   ├── __init__.py
-│   ├── utils.py              # Label dictionaries, metrics, span decoding
-│   ├── data_preparation.py   # Custom PyTorch Dataset and tokenization
-│   ├── model.py              # Neural network architecture (CausalExtractor)
-│   ├── train.py              # Training script
-│   ├── predict.py            # Inference script (used by Module 2)
-│   └── evaluate.py           # Final evaluation on test set
-├── configs/
-│   └── default.yaml          # Training hyperparameters
+│   ├── causal_extraction/          # Module 1: Causal Relation Extraction
+│   │   ├── __init__.py
+│   │   ├── utils.py                # Label dictionaries, metrics, span decoding
+│   │   ├── data_preparation.py     # Custom PyTorch Dataset and tokenization
+│   │   ├── model.py                # Neural network architecture (CausalExtractor)
+│   │   ├── train.py                # Training script
+│   │   ├── predict.py              # Inference script (used by Module 2)
+│   │   └── evaluate.py             # Final evaluation on test set
+│   └── cognitive_map/              # Module 2: Cognitive Map Construction
+│       ├── __init__.py
+│       ├── normalizer.py           # Concept normalization and lemmatization
+│       ├── builder.py              # Graph construction (NetworkX)
+│       └── analyzer.py             # Topological analysis (centrality, roots)
+── configs/
+│   └── default.yaml                # Training hyperparameters
 ├── data/
-│   ├── train.txt             # Synthetic training dataset (BIOES format)
-│   ├── val.txt               # Synthetic validation dataset (BIOES format)
-│   └── test.txt              # Synthetic test dataset (BIOES format)
+│   ├── train.txt                   # Synthetic training dataset (BIOES format)
+│   ├── val.txt                     # Synthetic validation dataset (BIOES format)
+│   └── test.txt                    # Synthetic test dataset (BIOES format)
 ├── models/
-│   ── best_model.pt         # Trained model weights (download separately)
+│   └── best_model.pt               # Trained model weights (download separately)
 ├── tests/
-│   └── test.py               # Quick inference test script
+│   ├── test_module1.py             # Quick inference test script (Module 1)
+│   └── test_module2.py             # Cognitive map test script (Module 2)
 ├── .gitignore
 ├── requirements.txt
-├── LICENSE
+── LICENSE
 └── README.md
 ```
 
