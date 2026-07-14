@@ -1,9 +1,8 @@
 import torch
 import yaml
 from transformers import AutoTokenizer
-from src.model import CausalExtractor
-from src.utils import extract_spans_from_bioes
-
+from .model import CausalExtractor
+from .utils import extract_spans_from_bioes
 
 class CausalPredictor:
     """The class for inference (prediction) of cause-and-effect relationships"""

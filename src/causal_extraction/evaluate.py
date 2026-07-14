@@ -4,9 +4,9 @@ import torch
 import numpy as np
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer
-from src.data_preparation import CausalDataset
-from src.model import CausalExtractor
-from src.utils import compute_metrics
+from .model import CausalExtractor
+from .data_preparation import CausalDataset
+from .utils import compute_metrics
 
 def evaluate(config_path='configs/default.yaml'):
     with open(config_path, 'r') as f:

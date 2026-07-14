@@ -6,8 +6,8 @@ from torch.utils.data import DataLoader
 from torch.optim import AdamW
 from transformers import AutoTokenizer, get_linear_schedule_with_warmup
 from sklearn.metrics import precision_recall_fscore_support
-from src.data_preparation import CausalDataset
-from src.model import CausalExtractor
+from .model import CausalExtractor
+from .data_preparation import CausalDataset
 
 def train(config_path='configs/default.yaml'):
     with open(config_path, 'r') as f:
