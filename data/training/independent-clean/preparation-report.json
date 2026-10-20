@@ -1,0 +1,20 @@
+{
+  "train": {
+    "input": 1290,
+    "kept": 1265,
+    "conflicting_labels_removed": 0,
+    "duplicates_removed": 25
+  },
+  "val": {
+    "input": 277,
+    "kept": 268,
+    "conflicting_labels_removed": 0,
+    "duplicates_removed": 9
+  },
+  "test": {
+    "input": 277,
+    "kept": 261,
+    "conflicting_labels_removed": 0,
+    "duplicates_removed": 16
+  }
+}

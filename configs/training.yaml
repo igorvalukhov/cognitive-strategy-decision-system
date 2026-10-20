@@ -1,0 +1,15 @@
+model:
+  name: distilbert-base-uncased
+  num_labels: 9
+  dropout: 0.2
+training:
+  epochs: 10
+  batch_size: 16
+  learning_rate: 0.00002
+  weight_decay: 0.01
+  max_length: 128
+  seed: 42
+  warmup_ratio: 0.1
+  patience: 3
+inference:
+  word_strategy: first_subtoken

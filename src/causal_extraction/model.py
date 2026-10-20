@@ -7,6 +7,8 @@ class CausalExtractor(nn.Module):
         
         self.config = AutoConfig.from_pretrained(model_name, num_labels=num_labels)
         self.config.hidden_dropout_prob = dropout
+        self.config.dropout = dropout
+        self.config.attention_dropout = dropout
         
         self.model = AutoModelForTokenClassification.from_pretrained(
             model_name, 

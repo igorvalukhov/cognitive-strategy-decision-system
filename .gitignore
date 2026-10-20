@@ -22,3 +22,7 @@ data/*.json
 logs/
 wandb/
 *.log
+.venv/
+.pytest_cache/
+
+/backups/

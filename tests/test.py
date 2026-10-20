@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from src.predict import CausalPredictor
+from src.causal_extraction.predict import CausalPredictor
 
 def run_tests():
     print("Running Causal Module Tests...")

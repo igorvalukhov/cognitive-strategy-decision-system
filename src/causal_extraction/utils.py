@@ -18,13 +18,13 @@ def set_seed(seed: int = 42):
 def compute_metrics(pred_labels, true_labels):
     pred_labels = np.array(pred_labels)
     true_labels = np.array(true_labels)
-    mask = (true_labels != 0) & (true_labels != -100)
+    mask = true_labels != -100
     if mask.sum() == 0:
         return {'f1': 0.0, 'precision': 0.0, 'recall': 0.0}
     precision, recall, f1, _ = precision_recall_fscore_support(
         true_labels[mask], 
         pred_labels[mask], 
-        average='macro', 
+        labels=list(range(1, 9)), average='macro',
         zero_division=0
     )
     return {'f1': float(f1), 'precision': float(precision), 'recall': float(recall)}
