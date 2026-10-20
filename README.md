@@ -1,5 +1,14 @@
 # Causal Relation Extraction Module (Module 1)
 
+## Local web interface / Локальная веб-страница
+
+A minimal FastAPI interface is available: textarea, sentence-level causal
+extraction, confidence scores, and sentence statistics. See [WEB.md](WEB.md)
+for installation, launch commands, and interpretation of confidence scores.
+
+Минимальная страница на FastAPI: ввод текста, таблица причин и следствий,
+уверенность модели и статистика. Инструкция: [WEB.md](WEB.md).
+
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/) [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/) [![Transformers](https://img.shields.io/badge/Hugging_Face-Transformers-FFD21E?style=flat-square&logo=huggingface&logoColor=000)](https://huggingface.co/)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Status](https://img.shields.io/badge/status-active-success.svg)]() [![F1 Score](https://img.shields.io/badge/F1_Score-0.7843-brightgreen.svg)]()
@@ -84,41 +93,72 @@ The module is built on the **DistilBERT** transformer architecture using the **B
 
 ## Project Structure
 
-```cognitive-strategy-decision-system/
+```text
+cognitive-strategy-decision-system/
 ├── src/
-│   ├── __init__.py
-│   ├── causal_extraction/          # Module 1: Causal Relation Extraction
-│   │   ├── __init__.py
-│   │   ├── utils.py                # Label dictionaries, metrics, span decoding
-│   │   ├── data_preparation.py     # Custom PyTorch Dataset and tokenization
-│   │   ├── model.py                # Neural network architecture (CausalExtractor)
-│   │   ├── train.py                # Training script
-│   │   ├── predict.py              # Inference script (used by Module 2)
-│   │   └── evaluate.py             # Final evaluation on test set
-│   └── cognitive_map/              # Module 2: Cognitive Map Construction
-│       ├── __init__.py
-│       ├── normalizer.py           # Concept normalization and lemmatization
-│       ├── builder.py              # Graph construction (NetworkX)
-│       └── analyzer.py             # Topological analysis (centrality, roots)
-── configs/
-│   └── default.yaml                # Training hyperparameters
-├── data/
-│   ├── train.txt                   # Synthetic training dataset (BIOES format)
-│   ├── val.txt                     # Synthetic validation dataset (BIOES format)
-│   └── test.txt                    # Synthetic test dataset (BIOES format)
-├── models/
-│   └── best_model.pt               # Trained model weights (download separately)
-├── tests/
-│   ├── test_module1.py             # Quick inference test script (Module 1)
-│   └── test_module2.py             # Cognitive map test script (Module 2)
+│   ├── synthetic/                  # Synthetic dataset generation
+│   │   ├── generator.py            # Requests to the selected GigaChat/Qwen model
+│   │   └── dataset.py              # Annotation validation and dataset splits
+│   │
+│   ├── causal_extraction/          # Training and inference (Module 1)
+│   │   ├── train.py                # Training entry point
+│   │   ├── train_module.py         # Training loop and best checkpoint selection
+│   │   ├── training_data.py        # Loading prepared datasets
+│   │   ├── data_preparation.py     # Compatibility with legacy imports
+│   │   ├── evaluate.py             # Model evaluation on the test split
+│   │   ├── metrics.py              # Evaluation metrics
+│   │   ├── model.py                # Model architecture
+│   │   ├── predict.py              # Text inference using trained weights
+│   │   ├── spans.py                # Cause and effect span decoding
+│   │   ├── activate.py             # Activation of new model weights
+│   │   └── utils.py                # Label definitions and utility functions
+│   │
+│   ├── web/                        # Server and web interface
+│   │   ├── app.py                  # FastAPI application and API routes
+│   │   ├── service.py              # Sentence analysis and statistics
+│   │   ├── documents.py            # Text extraction from documents
+│   │   ├── jobs.py                 # Background generation jobs
+│   │   ├── bundle.py               # Standalone training bundle for Colab
+│   │   └── static/                 # Frontend
+│   │       ├── index.html          # Three-tab interface
+│   │       ├── app.js              # Button handlers and result rendering
+│   │       └── style.css           # Page styles
+│   │
+│   └── cognitive_map/              # Cognitive map construction (Module 2)
+│       ├── normalizer.py           # Concept normalization
+│       ├── builder.py              # Graph construction
+│       └── analyzer.py             # Graph analysis
+│
+├── configs/                        # Model and training configurations
+│   ├── default.yaml
+│   └── training.yaml
+├── data/                           # Datasets
+│   ├── train.txt, val.txt, test.txt # Original dataset splits
+│   ├── generated/                  # Generation run outputs
+│   └── training/independent-clean/ # Deduplicated dataset splits
+├── models/                         # Model weights and active model selection
+├── notebooks/                      # Google Colab training notebook
+│   └── Module1_Training.ipynb
+├── tests/                          # Automated tests and test scripts
+├── requirements.txt                # Core dependencies
+├── requirements-web.txt            # Web server dependencies
+├── requirements-module1.txt        # Dependencies for the complete Module 1
+├── requirements-test.txt           # Test dependencies
+├── start-web.cmd                   # Windows server launcher
+├── start-web.ps1                   # FastAPI startup script
+├── start-gigachat.ps1              # llama-server launcher for GigaChat weights
 ├── .gitignore
-├── requirements.txt
-── LICENSE
+├── LICENSE
 └── README.md
 ```
 
----
+Обучение и анализ находятся в общей папке `causal_extraction/`, поскольку
+используют одну архитектуру модели и набор меток. Обучение принимает готовые
+выборки `train`, `val`, `test` в TXT или JSONL независимо от их источника.
+Для анализа нужны совместимые веса, конфигурация и токенизатор; запуск
+генератора и обучения для анализа не требуется.
 
+---
 ## Installation
 
 ### 1. Clone the repository
