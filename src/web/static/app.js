@@ -4,7 +4,7 @@ const percent = (value) => new Intl.NumberFormat('ru-RU', {style: 'percent', max
 const updateCounter = () => { $('counter').textContent = `${input.value.length.toLocaleString('ru-RU')} / 200 000`; };
 input.addEventListener('input', updateCounter);
 $('example').addEventListener('click', () => {
-  input.value = 'The sudden increase in interest rates led to a massive outflow of foreign investment. Political instability in the region caused a stock market crash. The Senate reviewed the fiscal reform report but deferred action until next quarter.';
+  input.value = 'The sudden increase in interest rates led to a massive outflow of foreign investment. Political instability caused widespread protests. The Senate reviewed the fiscal reform report but deferred action until next quarter.';
   updateCounter();
   input.focus();
 });
@@ -113,73 +113,3 @@ $('analysis-form').addEventListener('submit', async (event) => {
 });
 
 $('clear-file').addEventListener('click', () => { $('document').value = ''; });
-document.querySelectorAll('.tab').forEach(button => button.addEventListener('click', () => {
-  document.querySelectorAll('.tab').forEach(tab => { tab.classList.toggle('active', tab === button); tab.setAttribute('aria-pressed', String(tab === button)); });
-  document.querySelectorAll('.tab-panel').forEach(panel => { panel.hidden = panel.id !== button.dataset.panel; });
-}));
-
-async function api(url, options) {
-  const response = await fetch(url, options);
-  const data = await response.json();
-  if (!response.ok) throw new Error(typeof data.detail === 'string' ? data.detail : 'Проверьте параметры запроса.');
-  return data;
-}
-
-let generationTimer;
-function showJob(job) {
-  const active = ['running', 'cancelling'].includes(job.status);
-  $('generate').disabled = active;
-  $('cancel-generation').hidden = !active;
-  $('cancel-generation').disabled = job.status === 'cancelling';
-  ['provider', 'domain', 'sample-count', 'negative-ratio', 'seed'].forEach(id => { $(id).disabled = active; });
-  $('generation-progress').max = job.count || 2000;
-  $('generation-progress').value = job.accepted || 0;
-  $('generation-status').textContent = job.message || 'Генерация ещё не запускалась.';
-  $('generation-detail').textContent = job.id ? `Запуск ${job.id} · ${job.accepted || 0}/${job.count} примеров · ${job.attempts || 0} попыток · ${job.status}` : '';
-  clearTimeout(generationTimer);
-  if (active) generationTimer = setTimeout(pollJob, 2500);
-}
-async function pollJob() {
-  try { showJob(await api('/api/generator/status')); }
-  catch (error) { $('generation-status').textContent = 'Нет связи с сервером. Состояние генерации неизвестно.'; generationTimer = setTimeout(pollJob, 5000); }
-}
-$('generation-form').addEventListener('submit', async event => {
-  event.preventDefault();
-  $('generate').disabled = true;
-  try {
-    showJob(await api('/api/generator/start', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({
-      provider: $('provider').value, domain: $('domain').value.trim(), count: Number($('sample-count').value), negative_ratio: Number($('negative-ratio').value)/100, seed: Number($('seed').value)
-    })}));
-  } catch (error) { $('generation-status').textContent = error.message; $('generate').disabled = false; }
-});
-$('cancel-generation').addEventListener('click', async () => {
-  try { showJob(await api('/api/generator/cancel', {method: 'POST'})); }
-  catch (error) { $('generation-status').textContent = error.message; }
-});
-$('check-gigachat').addEventListener('click', async () => {
-  $('check-gigachat').disabled = true;
-  $('gigachat-status').textContent = 'Проверка подключения…';
-  try { const health = await api('/api/generator/health?provider=' + encodeURIComponent($('provider').value)); $('gigachat-status').textContent = health.available ? `Подключён: ${health.models.join(', ')} · ${health.base_url}` : health.message; }
-  catch (error) { $('gigachat-status').textContent = error.message; }
-  finally { $('check-gigachat').disabled = false; }
-});
-$('download-bundle').addEventListener('click', async () => {
-  $('download-bundle').disabled = true;
-  try {
-    const response = await fetch('/api/colab/bundle?dataset=' + encodeURIComponent($('training-dataset').value.trim()));
-    if (!response.ok) { const data = await response.json(); throw new Error(data.detail); }
-    const url = URL.createObjectURL(await response.blob());
-    const link = document.createElement('a'); link.href = url; link.download = 'module1-training.zip'; link.click();
-    setTimeout(() => URL.revokeObjectURL(url), 10000);
-    $('training-status').textContent = 'Пакет скачан. Загрузите его из блокнота Colab.';
-  } catch (error) { $('training-status').textContent = error.message; }
-  finally { $('download-bundle').disabled = false; }
-});
-pollJob();
-
-$('provider').addEventListener('change', () => {
-  const name = $('provider').value === 'qwen' ? 'Qwen' : 'GigaChat';
-  $('check-gigachat').textContent = 'Проверить ' + name;
-  $('generate').textContent = 'Генерировать через ' + name + ' →';
-  $('gigachat-status').textContent = 'Проверьте подключение к ' + name + '.';
-});

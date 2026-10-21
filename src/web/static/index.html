@@ -10,22 +10,16 @@
 <body>
   <main>
     <header>
-      <div class="eyebrow">COGNITIVE STRATEGY · МОДУЛЬ 1</div>
+      <div class="eyebrow">COGNITIVE ANALYZER</div>
       <h1>От данных к причинным связям</h1>
-      <p class="intro">Выбранная локальная модель создаёт примеры. DistilBERT учится и анализирует документы.</p>
+      <p class="intro">Анализ английского текста и документов</p>
     </header>
-    <nav class="tabs" aria-label="Разделы модуля">
-      <button type="button" class="tab active" data-panel="analysis-panel" aria-pressed="true">01 · Анализ</button>
-      <button type="button" class="tab" data-panel="generation-panel" aria-pressed="false">02 · Синтетика</button>
-      <button type="button" class="tab" data-panel="training-panel" aria-pressed="false">03 · Обучение</button>
-    </nav>
-    <div id="analysis-panel" class="tab-panel">
     <section class="panel" aria-labelledby="input-title">
       <form id="analysis-form">
         <div class="section-head"><label id="input-title" for="text">Текст для анализа</label><button id="example" type="button" class="text-button">Вставить пример</button></div>
         <textarea id="text" name="text" maxlength="200000" placeholder="Political instability in the region caused a stock market crash." aria-describedby="input-help"></textarea>
         <div class="input-footer"><p id="input-help">Английский язык · до 200 000 символов и 2 000 предложений</p><span id="counter">0 / 200 000</span></div>
-        <div class="upload-zone"><label for="document">Или загрузите документ</label><input id="document" type="file" accept=".pdf,.docx,.xlsx,.xls,.csv,.json,.xml,.html,.htm,.md,.markdown,.txt"><button id="clear-file" class="text-button" type="button">Убрать файл</button><p>PDF, Word (DOCX), Excel, CSV, JSON, XML, HTML, Markdown, TXT · до 10 МБ. Если выбран файл, анализируется файл. PDF-сканы требуют OCR.</p></div>
+        <div class="upload-zone"><label for="document">Или загрузите документ</label><input id="document" type="file" accept=".pdf,.docx,.xlsx,.xls,.csv,.json,.xml,.html,.htm,.md,.markdown,.txt"><button id="clear-file" class="text-button" type="button">Убрать файл</button><p>PDF, Word (DOCX), Excel, CSV, JSON, XML, HTML, Markdown, TXT · до 10 МБ.</p></div>
         <div class="actions"><button id="analyze" type="submit">Анализировать <span aria-hidden="true">→</span></button><span id="status" role="status" aria-live="polite">Модель загружается при первом анализе.</span></div>
       </form>
       <p id="error" class="error" role="alert" hidden></p>
@@ -45,38 +39,9 @@
         <p id="empty" class="empty" hidden>В обработанных предложениях не найдено одновременно причины и следствия.</p>
       </div>
       <div id="skipped" class="notice" hidden></div>
-      <p class="explanation">* Уверенность — средняя оценка выделенных фрагментов по выходу модели (softmax). Это не F1 и не вероятность того, что связь верна в реальности. F1 измеряется на текстах с заранее известной правильной разметкой.</p>
-      <p class="explanation">Одна строка — одно предложение. Если найдено несколько причин или следствий, показаны все фрагменты: модель не определяет, какие из них образуют отдельные пары. «Без полной пары» означает, что модель не выделила оба типа фрагментов, а не доказанное отсутствие связи.</p>
+      <p class="explanation">* Уверенность - средняя оценка выделенных фрагментов по выходу модели (softmax).</p>
     </section>
-    </div>
-    <section id="generation-panel" class="tab-panel panel" hidden>
-      <div class="section-head"><h2>Генерация синтетического датасета</h2><span class="badge">GigaChat / Qwen · локальные веса</span></div>
-      <p class="intro">Меняйте предметную область без изменения кода. Примеры и разметка сохраняются в проекте автоматически.</p>
-      <form id="generation-form">
-        <div class="form-grid">
-          <label>Генератор<select id="provider"><option value="gigachat">GigaChat</option><option value="qwen">Qwen</option></select></label>
-          <label>Домен<input id="domain" value="политика" minlength="2" maxlength="200" required placeholder="Например: политика, экология, промышленность"></label>
-          <label>Количество примеров<input id="sample-count" type="number" min="30" max="10000" value="2000" required></label>
-          <label>Без причинной связи, %<input id="negative-ratio" type="number" min="10" max="50" value="30" required></label>
-          <label>Seed<input id="seed" type="number" min="0" max="1000000" value="42" required></label>
-        </div>
-        <p class="explanation">Генерируем английский текст для текущей DistilBERT. Проверяем теги, длину, дубликаты и полноту событий. Повторная проверка моделью не заменяет ручную проверку разметки.</p>
-        <div class="actions"><button id="generate" class="primary" type="submit">Генерировать датасет →</button><button id="check-gigachat" type="button" class="secondary">Проверить GigaChat</button><button id="cancel-generation" type="button" class="text-button" hidden>Остановить</button></div>
-      </form>
-      <p id="gigachat-status" class="explanation" role="status">Для генерации запустите сервер выбранной модели.</p>
-      <div class="job-card"><progress id="generation-progress" max="2000" value="0"></progress><p id="generation-status" role="status" aria-live="polite">Генерация ещё не запускалась.</p><p id="generation-detail" class="explanation"></p></div>
-      <p class="explanation">Папка: <code>data/generated/&lt;номер запуска&gt;/</code>. Для 2 000 примеров: train — 1 600, validation — 200, test — 200. После завершения укажите папку набора во вкладке обучения.</p>
-    </section>
-    <section id="training-panel" class="tab-panel panel" hidden>
-      <div class="section-head"><h2>Обучение в Google Colab</h2><span class="badge">DistilBERT · GPU</span></div>
-      <ol class="steps"><li>Подготовьте train, val и test в JSONL или TXT в папке <code>data/</code>. Генератор и сведения об источнике не требуются.</li><li>Скачайте пакет обучения с выбранным датасетом и блокнот. В Colab можно заменить три файла своим набором.</li><li>Откройте блокнот в Colab, выберите среду с GPU и выполните ячейки. Загрузите ZIP, когда блокнот попросит.</li><li>Скачайте результат: веса, конфигурацию и отчёт с F1. Инструкция установки — в MODULE1.md.</li></ol>
-      <label>Папка датасета в проекте<input id="training-dataset" value="data/training/independent-clean" placeholder="data/my-dataset"></label><p class="explanation">Нужны train, val и test (.jsonl или .txt). Укажите любую подготовленную папку внутри data/; сведения о генераторе не нужны.</p>
-      <div class="actions"><button id="download-bundle" class="primary" type="button">Скачать пакет для Colab</button><a class="secondary link-button" href="/api/colab/notebook">Скачать блокнот</a><a href="https://colab.research.google.com/" target="_blank" rel="noopener">Открыть Colab ↗</a></div>
-      <p id="training-status" role="status" class="explanation"></p>
-      <div class="notice">Основной показатель — F1 точных фрагментов на отложенной выборке. Дополнительно: F1 токенов, полных пар и причинных предложений, ложные срабатывания на отрицательных примерах. Результаты на синтетике не равны качеству на реальных документах.</div>
-      <p class="explanation">Старые рабочие веса сохраняются. Генерация и скачивание пакета не запускают обучение автоматически.</p>
-    </section>
-    <footer>Анализ документов выполняется локально. Генератор обращается к серверу выбранной модели.<br>В Colab передаётся только скачанный вами пакет обучения. При первом запуске может потребоваться скачивание моделей.</footer>
+    <footer>Анализ документов выполняется локально.<br>При первом запуске может потребоваться скачивание модели и токенизатора.</footer>
   </main>
 </body>
 </html>

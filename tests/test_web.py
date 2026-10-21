@@ -95,6 +95,35 @@ def test_model_load_failure_is_retryable():
         assert client.post('/api/analyze', json={'text': 'Test.'}).status_code == 200
 
 
+def test_analyzer_only_page_and_routes():
+    import re
+    with TestClient(create_app(FakePredictor)) as client:
+        page = client.get('/').text
+        script = client.get('/static/app.js').text
+        assert 'analysis-form' in page and 'type="file"' in page
+        for marker in ('class="tabs"', 'generation-panel', 'training-panel', 'GigaChat', 'Colab'):
+            assert marker not in page
+        assert '/api/generator/' not in script and '/api/colab/' not in script
+        ids = set(re.findall(r'id="([^"]+)"', page))
+        assert set(re.findall(r"\$\('([^']+)'\)", script)) <= ids
+        for url in ('/api/generator/status', '/api/generator/health', '/api/colab/bundle', '/api/colab/notebook'):
+            assert client.get(url).status_code == 404
+        for url in ('/api/generator/start', '/api/generator/cancel'):
+            assert client.post(url, json={}).status_code == 404
+
+
+def test_text_and_file_analysis_match():
+    with TestClient(create_app(FakePredictor)) as client:
+        text = 'Inflation increases poverty. No change.'
+        expected = client.post('/api/analyze', json={'text': text}).json()
+        uploaded = client.post('/api/analyze-file', files={'file': ('sample.txt', text.encode(), 'text/plain')})
+        assert uploaded.status_code == 200
+        result = uploaded.json()
+        assert result.pop('source') == 'sample.txt'
+        assert result.pop('warnings') == []
+        assert result == expected
+
+
 def test_subtokens_are_combined_and_long_input_is_not_silently_truncated():
     import torch
     from types import SimpleNamespace

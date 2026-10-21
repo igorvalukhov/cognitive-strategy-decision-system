@@ -1,4 +1,3 @@
-import ast
 import io
 import json
 from pathlib import Path
@@ -82,7 +81,7 @@ def test_reject_unsupported_and_xml_entities():
         extract_document('a.xml',b'<!DOCTYPE x [<!ENTITY x SYSTEM "file:///private">]><x>&x;</x>')
 
 
-def test_upload_api_and_notebook():
+def test_upload_api():
     class Predictor:
         def predict_detailed(self,text):
             return {'causes':[], 'effects':[]}
@@ -92,10 +91,6 @@ def test_upload_api_and_notebook():
         assert result.json()['source'] == 'a.txt'
         assert result.json()['statistics']['total_sentences'] == 1
         assert client.post('/api/analyze-file',files={'file':('a.exe',b'no')}).status_code == 422
-        notebook = client.get('/api/colab/notebook').json()
-        for cell in notebook['cells']:
-            if cell['cell_type'] == 'code':
-                ast.parse(''.join(cell['source']))
 
 
 def test_first_subtoken_training_alignment(tmp_path):
